@@ -1,18 +1,21 @@
+import os
 import mysql.connector
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
-app.secret_key = "dev-secret-key-change-this-later"
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback-dev-key")
 
 # Database configuration
 DB_CONFIG = {
-    "host": "db",
-    "user": "f1user",
-    "password": "f1password",
-    "database": "f1_fan_tracker"
+    "host": os.getenv("DB_HOST"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME"),
+    "port": int(os.getenv("DB_PORT", 3306)),
 }
+
 
 def get_db_connection():
     return mysql.connector.connect(**DB_CONFIG)
