@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}F1 Fan Tracker{% endblock %}</title>
+    <link rel="icon" type="image/png"
+      href="{{ url_for('static', filename='images/F1.png') }}">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+    <a href="/drivers" class="brand">
+        <img
+            src="{{ url_for('static', filename='images/F1.png') }}"
+            alt="F1 Logo"
+            style="
+            height: 28px;
+            width: auto;
+            display: block;"
+        >   
+    </a>
+
+    <div class="nav-links">
+        <a href="/drivers">Drivers</a>
+        <a href="/teams">Teams</a>
+
+        {% if session.get("user_id") %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </div>
+</nav>
+
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>

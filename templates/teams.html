@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Teams{% endblock %}
+
+{% block content %}
+
+<h1>Teams</h1>
+
+<div class="grid">
+    {% for team in teams %}
+        {% set image_name = team.name
+            | lower
+            | replace(' ', '_')
+        %}
+
+        <a href="/teams/{{ team.id }}" class="card">
+            <div class="card-image team-image">
+                <img
+                    src="/static/images/teams/{{ image_name }}.png"
+                    alt="{{ team.name }}"
+                    onerror="this.src='/static/images/teams/placeholder.png'"
+                >
+            </div>
+
+            <div class="card-body">
+                <h3>{{ team.name }}</h3>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+{% endblock %}

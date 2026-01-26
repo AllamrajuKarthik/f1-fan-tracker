@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}{{ team.name }}{% endblock %}
+
+{% block content %}
+
+<div class="profile-header">
+    <div>
+        <h1>{{ team.name }}</h1>
+        {% if team.team_principal %}
+            <p class="muted">Team Principal: {{ team.team_principal }}</p>
+        {% endif %}
+    </div>
+
+    {% if session.get("user_id") %}
+        <a href="/favorite/team/{{ team_id }}" class="btn">
+            ★ Add to Favorites
+        </a>
+    {% endif %}
+</div>
+
+<div class="profile-grid">
+    <!-- LEFT: STATS -->
+    <div class="profile-stats">
+        <h2>Season Points</h2>
+
+        <table class="points-table">
+            <thead>
+                <tr>
+                    <th>Season</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in points %}
+                    <tr>
+                        <td>{{ row.year }}</td>
+                        <td>{{ row.points }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- RIGHT: LOGO / IMAGE -->
+    <div class="profile-image">
+        <img
+            src="/static/images/teams/{{ image_name }}.png"
+                    alt="{{ team.name }}"
+                    onerror="this.src='/static/images/teams/placeholder.png'"
+        >
+    </div>
+</div>
+
+{% endblock %}

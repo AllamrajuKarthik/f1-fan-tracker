@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: f1_flask
+    restart: always
+    depends_on:
+      - db
+    expose:
+      - "5000"
+
+  db:
+    image: mysql:8.0
+    container_name: f1_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Agpvsk@123
+      MYSQL_DATABASE: f1_fan_tracker
+      MYSQL_USER: f1user
+      MYSQL_PASSWORD: f1password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:latest
+    container_name: f1_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+
+volumes:
+  mysql_data:

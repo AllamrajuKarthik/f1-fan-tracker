@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<h1>Welcome, {{ username }}</h1>
+
+<h2>Your Favorites</h2>
+
+{% if favorites %}
+    <ul class="favorites-list">
+        {% for f in favorites %}
+            <li>
+                {% if f.driver_name %}
+                    ⭐ Driver: {{ f.driver_name }}
+                {% elif f.team_name %}
+                    ⭐ Team: {{ f.team_name }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="muted">You haven’t added any favorites yet.</p>
+{% endif %}
+
+{% endblock %}
