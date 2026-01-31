@@ -24,10 +24,8 @@ def get_db_connection():
 
 @app.route("/")
 def home():
-    if "user_id" in session:
-        return redirect("/dashboard")
-    return redirect("/drivers")
-
+    return "SUCCESS"
+    
 @app.route("/drivers")
 def drivers():
     conn = get_db_connection()
