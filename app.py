@@ -166,8 +166,8 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form["Enter your username"]
+        password = request.form["Enter yo damn password"]
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
