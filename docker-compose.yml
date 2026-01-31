@@ -16,11 +16,8 @@ services:
     image: mysql:8.0
     container_name: f1_mysql
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: Agpvsk@123
-      MYSQL_DATABASE: f1_fan_tracker
-      MYSQL_USER: f1user
-      MYSQL_PASSWORD: f1password
+    env_file:
+      - .env
     volumes:
       - mysql_data:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -33,6 +30,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: f1_nginx
+    restart: always
     ports:
       - "80:80"
     volumes:
