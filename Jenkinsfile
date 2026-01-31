@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', url: 'https://github.com/AllamrajuKarthik/f1-fan-tracker.git'
-            }
-        }
-
         stage('Stop old containers') {
             steps {
                 sh 'docker compose down || true'
@@ -30,10 +24,10 @@ pipeline {
 
     post {
         success {
-            echo 'CI/CD pipeline executed successfully! IT WORKSS!!'
+            echo 'Deployment completed successfully! It Worksssss!!'
         }
         failure {
-            echo 'Pipeline failed!!BRUH JUST CHECK IT AGAIN!!'
+            echo 'Deployment failed!! Check the logs and try again!!'
         }
     }
 }
