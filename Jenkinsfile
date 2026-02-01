@@ -3,13 +3,16 @@ pipeline {
 
     stages {
 
-        stage('Stop old containers') {
+        stage('Cleanup old containers') {
             steps {
-                sh 'docker-compose down || true'
+                sh '''
+                  docker-compose down || true
+                  docker rm -f f1_mysql f1_flask f1_nginx || true
+                '''
             }
         }
 
-        stage('Build & Deploy containers') {
+        stage('Build & Deploy') {
             steps {
                 sh 'docker-compose up -d --build'
             }
@@ -18,10 +21,10 @@ pipeline {
 
     post {
         success {
-            echo 'Deployment completed successfully!! ITT WORKSSS!!'
+            echo 'Deployment completed successfully!!! IT WORKS!!!'
         }
         failure {
-            echo 'Deployment failed!!!! Check logs'
+            echo 'Deployment failed!!!!Check logs'
         }
     }
 }
