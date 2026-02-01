@@ -9,25 +9,19 @@ pipeline {
             }
         }
 
-        stage('Build containers') {
+        stage('Build & Deploy containers') {
             steps {
-                sh 'docker-compose build'
-            }
-        }
-
-        stage('Deploy new containers') {
-            steps {
-                sh 'docker-compose up -d'
+                sh 'docker-compose up -d --build'
             }
         }
     }
 
     post {
         success {
-            echo 'Deployment completed successfully! It Worksssss!!'
+            echo 'Deployment completed successfully!! ITT WORKSSS!!'
         }
         failure {
-            echo 'Deployment failed!! Check the logs and try again!!'
+            echo 'Deployment failed!!!! Check logs'
         }
     }
 }
