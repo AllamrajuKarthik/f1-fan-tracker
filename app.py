@@ -1,8 +1,8 @@
 import os
+import time
 import mysql.connector
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
-
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback-dev-key")
@@ -17,17 +17,28 @@ DB_CONFIG = {
 }
 
 
-def get_db_connection():
-    return mysql.connector.connect(**DB_CONFIG)
+# ---- SAFE DB CONNECTION (with retry) ----
 
-# Routes
+def get_db_connection():
+    for i in range(10):   # retry for ~10 seconds
+        try:
+            return mysql.connector.connect(**DB_CONFIG)
+        except mysql.connector.Error:
+            print(f"DB not ready yet... retrying ({i+1}/10)")
+            time.sleep(1)
+
+    raise Exception("Database not ready after retries")
+
+
+# ---------------- ROUTES ----------------
 
 @app.route("/")
 def home():
     if "user_id" in session:
         return redirect("/dashboard")
     return redirect("/drivers")
-    
+
+
 @app.route("/drivers")
 def drivers():
     conn = get_db_connection()
@@ -46,6 +57,7 @@ def drivers():
     conn.close()
 
     return render_template("drivers.html", drivers=drivers)
+
 
 @app.route("/drivers/<int:driver_id>")
 def driver_profile(driver_id):
@@ -81,7 +93,8 @@ def driver_profile(driver_id):
         points=points,
         driver_id=driver_id
     )
-    
+
+
 @app.route("/teams")
 def teams():
     conn = get_db_connection()
@@ -99,6 +112,7 @@ def teams():
     conn.close()
 
     return render_template("teams.html", teams=teams)
+
 
 @app.route("/teams/<int:team_id>")
 def team_profile(team_id):
@@ -129,7 +143,6 @@ def team_profile(team_id):
 
     image_name = team["name"].lower().replace(" ", "_")
 
-
     return render_template(
         "team_profile.html",
         team=team,
@@ -137,6 +150,7 @@ def team_profile(team_id):
         team_id=team_id,
         image_name=image_name
     )
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -163,11 +177,14 @@ def register():
 
     return render_template("register.html")
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["Enter your username"]
-        password = request.form["Enter yo damn password"]
+
+        # IMPORTANT: keep these simple
+        username = request.form["username"]
+        password = request.form["password"]
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
@@ -220,10 +237,12 @@ def dashboard():
         username=session["username"]
     )
 
+
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/login")
+
 
 @app.route("/favorite/driver/<int:driver_id>")
 def favorite_driver(driver_id):
@@ -243,6 +262,7 @@ def favorite_driver(driver_id):
     conn.close()
 
     return redirect(f"/drivers/{driver_id}")
+
 
 @app.route("/favorite/team/<int:team_id>")
 def favorite_team(team_id):
@@ -264,6 +284,7 @@ def favorite_team(team_id):
     return redirect(f"/teams/{team_id}")
 
 
-# Entry point for the app
+# ---- ENTRY POINT ----
+
 if __name__ == "__main__":
     app.run(debug=True)
