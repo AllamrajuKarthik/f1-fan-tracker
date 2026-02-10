@@ -21,10 +21,10 @@ pipeline {
 
     post {
         success {
-            echo 'Deployment completed successfully!!! IT WORKS!!!#JMJM'
+            echo 'Deployment completed successfully!!!'
         }
         failure {
-            echo 'Deployment failed!!!!Check logs U IDIOT!! JCJC'
+            echo 'Deployment failed!!!!Check logs'
         }
     }
 }
